@@ -8,6 +8,13 @@ var passport = require("passport");
 var usersController = require('../controllers/users');
 var staticsController = require('../controllers/statics');
 
+function authenticatedUser(req, res, next) {
+	//if user is authenticated, we continue
+	if (req.isAuthenticated()) return next();
+	//otherwise req is redirected to home
+	res.redirect('/');
+}
+
 router.route('/')
   .get(staticsController.home);
 
@@ -18,6 +25,9 @@ router.route('/signup')
 router.route('/login')
   .get(usersController.getLogin)
   .post(usersController.postLogin)
+
+router.route('/secret')
+  .get(authenticatedUser, usersController.secret)  
 
 router.route("/logout")
   .get(usersController.getLogout)
